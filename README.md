@@ -1,9 +1,9 @@
 # MusicOfTheUniverse
 
 ## Group 2:
-  Heriberto Rosa (Team Leader)
-  David Varwig (Developer)
-  Gunner Lewis (Developer, Documentation Lead)
+- Heriberto Rosa (Team Leader)
+- David Varwig (Developer)
+- Gunner Lewis (Developer, Documentation Lead)
 
 ## Project Description:
 The project will focus on building a personalized music recommendation system based on user
