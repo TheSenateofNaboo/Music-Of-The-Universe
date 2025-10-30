@@ -1,11 +1,11 @@
-## MusicOfTheUniverse
+# MusicOfTheUniverse
 
-# Group 2:
+## Group 2:
   Heriberto Rosa (Team Leader)
   David Varwig (Developer)
   Gunner Lewis (Developer, Documentation Lead)
 
-# Project Description:
+## Project Description:
 The project will focus on building a personalized music recommendation system based on user
 listening preferences. Core features include searching by artist, song, or genre, or utilizing Spotify
 user’s listening habits using Spotify’s Web API. Features such as incorporating cross platform
