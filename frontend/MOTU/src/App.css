@@ -1,7 +1,7 @@
-{/*Formats the main page*/}
+/*Formats the main page*/
 
 .App {
-	background-color: #eee;
+	background-color: rgb(71, 61, 77);
 	height: 100vh;
 	width: 100vw;
 }
@@ -14,4 +14,72 @@
 	flex-direction: column;
 	align-items: center;
 	min-width: 200px;
+}
+
+.castle-background {
+  background-image: url('./aesthetic/CastleGrayskullWalls.jpg');
+  background-size: cover;
+  background-position: center;
+  box-shadow: inset 0 0 20px rgba(0, 0, 0, 0.7); /* Adds a shadow effect */
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  text-align: center;
+}
+
+.lightning-title {
+  display: flex;
+  font-size: 3rem;
+  font-weight: bold;
+  color: black;
+  justify-content: center; 
+  align-items: center;
+  animation: flicker 3s infinite;
+}
+
+@keyframes flicker {
+  0% {
+    text-shadow: 0 0 5px #ffffff, 0 0 10px #ffffff, 0 0 20px #ffff00, 0 0 30px #ffff00, 0 0 40px #0000ff, 0 0 50px #0000ff, 0 0 75px #0000ff;
+  }
+  10% {
+    text-shadow: 0 0 5px #ffffff, 0 0 10px #ffffff, 0 0 20px #ffff00, 0 0 30px #ffff00, 0 0 45px #0000ff, 0 0 60px #0000ff, 0 0 80px #0000ff;
+  }
+  20% {
+    text-shadow: 0 0 5px #ffffff, 0 0 10px #ffffff, 0 0 25px #ffff00, 0 0 35px #ffff00, 0 0 50px #0000ff, 0 0 60px #0000ff, 0 0 90px #0000ff;
+  }
+  30% {
+    text-shadow: 0 0 5px #ffffff, 0 0 10px #ffffff, 0 0 25px #ffff00, 0 0 40px #ffff00, 0 0 55px #0000ff, 0 0 75px #0000ff, 0 0 100px #0000ff;
+  }
+  40% {
+    text-shadow: 0 0 5px #ffffff, 0 0 10px #ffffff, 0 0 20px #ffff00, 0 0 30px #ffff00, 0 0 50px #0000ff, 0 0 70px #0000ff, 0 0 90px #0000ff;
+  }
+  50% {
+    text-shadow: 0 0 5px #ffffff, 0 0 15px #ffffff, 0 0 30px #ffff00, 0 0 45px #ffff00, 0 0 60px #0000ff, 0 0 90px #0000ff, 0 0 120px #0000ff;
+  }
+  60% {
+    text-shadow: 0 0 5px #ffffff, 0 0 10px #ffffff, 0 0 25px #ffff00, 0 0 40px #ffff00, 0 0 55px #0000ff, 0 0 75px #0000ff, 0 0 100px #0000ff;
+  }
+  70% {
+    text-shadow: 0 0 5px #ffffff, 0 0 10px #ffffff, 0 0 20px #ffff00, 0 0 30px #ffff00, 0 0 50px #0000ff, 0 0 70px #0000ff, 0 0 90px #0000ff;
+  }
+  80% {
+    text-shadow: 0 0 5px #ffffff, 0 0 10px #ffffff, 0 0 25px #ffff00, 0 0 40px #ffff00, 0 0 60px #0000ff, 0 0 85px #0000ff, 0 0 120px #0000ff;
+  }
+  90% {
+    text-shadow: 0 0 5px #ffffff, 0 0 10px #ffffff, 0 0 20px #ffff00, 0 0 30px #ffff00, 0 0 50px #0000ff, 0 0 70px #0000ff, 0 0 100px #0000ff;
+  }
+  100% {
+    text-shadow: 0 0 5px #ffffff, 0 0 10px #ffffff, 0 0 20px #ffff00, 0 0 30px #ffff00, 0 0 40px #0000ff, 0 0 60px #0000ff, 0 0 80px #0000ff;
+  }
+}
+
+select {
+  padding: 8px;
+  font-size: 16px;
+}
+
+option {
+  font-size: 16px;
 }
