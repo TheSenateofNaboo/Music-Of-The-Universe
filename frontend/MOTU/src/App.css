@@ -1,85 +1,212 @@
-/*Formats the main page*/
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
 
 .App {
-	background-color: rgb(71, 61, 77);
-	height: 100vh;
-	width: 100vw;
-}
-
-.search-bar-container {
-	padding-top: 20vh;
-	width: 48%;
-	margin: auto;
-	display: flex;
-	flex-direction: column;
-	align-items: center;
-	min-width: 200px;
-}
-
-.castle-background {
-  background-image: url('./aesthetic/CastleGrayskullWalls.jpg');
-  background-size: cover;
-  background-position: center;
-  box-shadow: inset 0 0 20px rgba(0, 0, 0, 0.7); /* Adds a shadow effect */
-  height: 100vh;
+  background: #08375d;
+  font-family: 'Cinzel', serif;
   display: flex;
-  justify-content: center;
-  align-items: center;
   flex-direction: column;
-  text-align: center;
+  align-items: center;
+  padding: 20px;
+  position: relative;
+  min-height: 100vh;
+  color: #fff;
+  z-index: 10;
+}
+
+.App::before {
+  content: '';
+  position: absolute;
+  top: 62vh;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: url('./aesthetic/CastleGrayskullWalls.jpg') no-repeat center center/cover;
+  filter: blur(8px);
+  z-index: -1;
 }
 
 .lightning-title {
   display: flex;
-  font-size: 3rem;
+  font-size: 5rem;
   font-weight: bold;
-  color: black;
-  justify-content: center; 
+  color: #1e90ff;
+  text-transform: uppercase;
+  text-shadow: 
+    2px 2px 5px rgba(0, 0, 0, 0.6),
+    -2px -2px 5px rgba(0, 0, 0, 0.6),
+    3px 3px 10px rgba(255, 255, 255, 0.7),
+    5px 5px 15px rgba(255, 255, 255, 0.5),
+    0 0 20px #ff0000,
+    0 0 30px #ff0000,
+    0 0 40px #ff4500;
+  justify-content: center;
   align-items: center;
-  animation: flicker 3s infinite;
+  animation: flicker 2s infinite;
 }
 
 @keyframes flicker {
-  0% {
-    text-shadow: 0 0 5px #ffffff, 0 0 10px #ffffff, 0 0 20px #ffff00, 0 0 30px #ffff00, 0 0 40px #0000ff, 0 0 50px #0000ff, 0 0 75px #0000ff;
-  }
-  10% {
-    text-shadow: 0 0 5px #ffffff, 0 0 10px #ffffff, 0 0 20px #ffff00, 0 0 30px #ffff00, 0 0 45px #0000ff, 0 0 60px #0000ff, 0 0 80px #0000ff;
-  }
-  20% {
-    text-shadow: 0 0 5px #ffffff, 0 0 10px #ffffff, 0 0 25px #ffff00, 0 0 35px #ffff00, 0 0 50px #0000ff, 0 0 60px #0000ff, 0 0 90px #0000ff;
-  }
-  30% {
-    text-shadow: 0 0 5px #ffffff, 0 0 10px #ffffff, 0 0 25px #ffff00, 0 0 40px #ffff00, 0 0 55px #0000ff, 0 0 75px #0000ff, 0 0 100px #0000ff;
-  }
-  40% {
-    text-shadow: 0 0 5px #ffffff, 0 0 10px #ffffff, 0 0 20px #ffff00, 0 0 30px #ffff00, 0 0 50px #0000ff, 0 0 70px #0000ff, 0 0 90px #0000ff;
+  0%, 100% {
+    text-shadow: 
+      2px 2px 5px rgba(0, 0, 0, 0.6),
+      -2px -2px 5px rgba(0, 0, 0, 0.6),
+      3px 3px 10px rgba(255, 255, 255, 0.7),
+      5px 5px 15px rgba(255, 255, 255, 0.5),
+      0 0 20px #ff0000,
+      0 0 30px #ff0000,
+      0 0 40px #ff4500;
   }
   50% {
-    text-shadow: 0 0 5px #ffffff, 0 0 15px #ffffff, 0 0 30px #ffff00, 0 0 45px #ffff00, 0 0 60px #0000ff, 0 0 90px #0000ff, 0 0 120px #0000ff;
-  }
-  60% {
-    text-shadow: 0 0 5px #ffffff, 0 0 10px #ffffff, 0 0 25px #ffff00, 0 0 40px #ffff00, 0 0 55px #0000ff, 0 0 75px #0000ff, 0 0 100px #0000ff;
-  }
-  70% {
-    text-shadow: 0 0 5px #ffffff, 0 0 10px #ffffff, 0 0 20px #ffff00, 0 0 30px #ffff00, 0 0 50px #0000ff, 0 0 70px #0000ff, 0 0 90px #0000ff;
-  }
-  80% {
-    text-shadow: 0 0 5px #ffffff, 0 0 10px #ffffff, 0 0 25px #ffff00, 0 0 40px #ffff00, 0 0 60px #0000ff, 0 0 85px #0000ff, 0 0 120px #0000ff;
-  }
-  90% {
-    text-shadow: 0 0 5px #ffffff, 0 0 10px #ffffff, 0 0 20px #ffff00, 0 0 30px #ffff00, 0 0 50px #0000ff, 0 0 70px #0000ff, 0 0 100px #0000ff;
-  }
-  100% {
-    text-shadow: 0 0 5px #ffffff, 0 0 10px #ffffff, 0 0 20px #ffff00, 0 0 30px #ffff00, 0 0 40px #0000ff, 0 0 60px #0000ff, 0 0 80px #0000ff;
+    text-shadow: 
+      3px 3px 8px rgba(0, 0, 0, 0.6),
+      -3px -3px 8px rgba(0, 0, 0, 0.6),
+      4px 4px 15px rgba(255, 255, 255, 0.8),
+      6px 6px 20px rgba(255, 255, 255, 0.5),
+      0 0 25px #ff0000,
+      0 0 35px #ff0000,
+      0 0 50px #ff4500;
   }
 }
 
-select {
-  padding: 8px;
-  font-size: 16px;
+.search {
+  margin-bottom: 30px;
+  text-align: center;
 }
 
-option {
-  font-size: 16px;
+.search label {
+  color: #1e90ff;
+  text-shadow: 
+    2px 2px 5px rgba(0, 0, 0, 0.6),
+    -2px -2px 5px rgba(0, 0, 0, 0.6),
+    3px 3px 10px rgba(255, 255, 255, 0.7),
+    5px 5px 15px rgba(255, 255, 255, 0.5),
+    0 0 20px #ff0000,
+    0 0 30px #ff0000,
+    0 0 40px #ff4500;
+  font-size: 1.5rem;
+  font-family: 'Cinzel', serif;
+  padding: 5px 10px;
+  border-radius: 4px;
+  margin-right: 15px;
+}
+
+.search select {
+  padding: 14px 20px;
+  font-size: 1.5rem;
+  border: 2px solid #ff0000;
+  border-radius: 6px;
+  background-color: #333;
+  color: #1e90ff;
+  font-family: 'Cinzel', serif;
+  transition: border-color 0.3s ease;
+}
+
+.search select:focus {
+  outline: none;
+  border-color: #ff4500;
+}
+
+.text-box {
+  margin-bottom: 30px;
+  text-align: center;
+}
+
+.text-box label {
+  color: #1e90ff;
+  text-shadow: 
+    2px 2px 5px rgba(0, 0, 0, 0.6),
+    -2px -2px 5px rgba(0, 0, 0, 0.6),
+    3px 3px 10px rgba(255, 255, 255, 0.7),
+    5px 5px 15px rgba(255, 255, 255, 0.5),
+    0 0 20px #ff0000,
+    0 0 30px #ff0000,
+    0 0 40px #ff4500;
+  font-size: 1.5rem;
+  font-family: 'Cinzel', serif;
+  padding: 5px 10px;
+  border-radius: 4px;
+  margin-right: 15px;
+}
+
+.text-box input {
+  padding: 15px 20px;
+  font-size: 1.5rem;
+  border: 2px solid #ff0000;
+  border-radius: 8px;
+  background-color: #444;
+  color: #1e90ff;
+  width: 300px;
+  font-family: 'Cinzel', serif;
+  box-shadow: 0 0 10px rgba(255, 255, 255, 0.6), 0 0 25px rgba(255, 0, 0, 0.5);
+  transition: border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+.text-box input:focus {
+  outline: none;
+  border-color: #ff4500;
+  box-shadow: 0 0 15px #ff6f00, 0 0 30px #ff4500;
+}
+
+.submit-button {
+  margin-bottom: 30px;
+}
+
+.submit-button button {
+  padding: 18px 36px;
+  font-size: 1.8rem;
+  border: none;
+  border-radius: 6px;
+  background-color: #1e90ff;
+  color: white;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  box-shadow: 0 6px 15px rgba(0, 0, 0, 0.2);
+  font-family: 'Cinzel', serif;
+}
+
+.submit-button button:hover {
+  background-color: #ff6f00;
+}
+
+.submit-button button:active {
+  background-color: #d9534f;
+}
+
+.result-display {
+  text-align: center;
+  font-size: 1.5rem;
+  color: #fff;
+  background-color: rgba(0, 0, 0, 0.7);
+  padding: 20px;
+  border-radius: 8px;
+  max-width: 600px;
+  margin-top: 30px;
+  font-family: 'Cinzel', serif;
+}
+
+@media (max-width: 768px) {
+  .App {
+    padding: 15px;
+  }
+
+  .lightning-title {
+    font-size: 3.5rem;
+  }
+
+  .search select, .text-box input {
+    width: 100%;
+    max-width: 350px;
+  }
+
+  .submit-button button {
+    font-size: 1.4rem;
+    padding: 12px 24px;
+  }
+
+  .result-display {
+    font-size: 1.2rem;
+  }
 }
