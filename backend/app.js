@@ -3,13 +3,17 @@ require('dotenv').config()
 
 // Load Express & fetch library
 const express = require('express');
-fetch("https://api.spotify.com/...");
-// Create express server
 const app = express();
 
-// Retrieve Spotify API credentials from environment variables 
-const client_id = process.env.ID
-const client_secret = process.env.SECRET
+fetch("https://api.spotify.com/...");
+
+// Retrieve Spotify API credentials from .env
+const client_id = process.env.ID;
+const client_secret = process.env.SECRET;
+
+// Last.fm credentials from .env
+const lastfm_id = process.env.LASTFM_ID;
+const lastfm_secret = process.env.LASTFM_SECRET;
 
 // Parse JSON in incoming requests
 app.use(express.json());
@@ -37,21 +41,31 @@ async function getToken() {
 
 /*
   ------------Spotify Fetch Helper------------
+    Function refreshes the spotify token per api call to ensure the current token doesn't expire
 */
 async function spotifyFetch(url) {
   const token = await getToken();
   const response = await fetch(url, {
     headers: { Authorization: `Bearer ${token}` }
   });
+  return response.json();
+}
 
+/*
+  ------------Last.fm Fetch Helper------------
+*/
+async function lastfmFetch(params) {
+  const url =  `http://ws.audioscrobbler.com/2.0/?${params}&api_key=${lastfm_id}&format=json`;
+  const response = await fetch(url);
   return response.json();
 }
 
 /*
   ------------Routes------------
-  handles search, track, artist, album, & recommendation api calls
+  Spotify Endpoints
 */
-// search
+
+// search (track/artist/album)
 app.get('/api/search', async (req, res) => { 
   try {
     const { q, type } = req.query;
@@ -72,7 +86,7 @@ app.get('/api/search', async (req, res) => {
   }
 });
 
-// track info
+// Get track info
 app.get('/api/track/:id', async (req, res) => {
   const data = await spotifyFetch(`https://api.spotify.com/v1/tracks/${req.params.id}`);
   res.json(data);
@@ -90,47 +104,84 @@ app.get('/api/albums/:id', async (req, res) => {
   res.json(data);
 });
 
-app.get("/api/recommendations", async (req, res) => {
-  try {
-    const { id, type } = req.query;
-    if (!id || !type) return res.status(400).json({ error: "Missing id or type" });
+/*
+  ------------Recommendations------------
+  type=track  -> similar tracks
+  type=artist -> similar artists -> top tracks
+  type=album  -> album -> pick track -> similar tracks
+*/
+app.get('/api/recommendations', async (req, res) => {
+  const { type, artist, track, albumId } = req.query;
 
-    const recs = [];
-    if (type === "track" || type === "artist") {
-      const artistId = type === "track" 
-        ? (await spotifyFetch(`https://api.spotify.com/v1/tracks/${id}`)).artists[0].id 
-        : id;
+  let seedArtist = artist;
+  let seedTrack = track;
+  let lastfmResults = [];
 
-      // Top tracks
-      const topTracks = await spotifyFetch(`https://api.spotify.com/v1/artists/${artistId}/top-tracks?market=US`);
-      recs.push(...topTracks.tracks);
+  // ---------- ALBUM ----------
+  if (type === "album") {
+    const album = await spotifyFetch(
+      `https://api.spotify.com/v1/albums/${albumId}`
+    );
 
-      // Genre-based recommendations
-      const artist = await spotifyFetch(`https://api.spotify.com/v1/artists/${artistId}`);
-      if (artist.genres?.length) {
-        const genreTracks = await spotifyFetch(
-          `https://api.spotify.com/v1/search?q=genre:"${encodeURIComponent(artist.genres[0])}"&type=track&limit=10`
-        );
-        recs.push(...genreTracks.tracks?.items || []);
+    const albumTrack = album.tracks.items[0];
+    seedTrack = albumTrack.name;
+    seedArtist = album.artists[0].name;
+
+    const data = await lastfmFetch(
+      `method=track.getsimilar&artist=${encodeURIComponent(seedArtist)}&track=${encodeURIComponent(seedTrack)}`
+    );
+
+    lastfmResults = data.similartracks?.track || [];
+  }
+
+  // ---------- TRACK ----------
+  else if (type === "track") {
+    const data = await lastfmFetch(
+      `method=track.getsimilar&artist=${encodeURIComponent(seedArtist)}&track=${encodeURIComponent(seedTrack)}`
+    );
+
+    lastfmResults = data.similartracks?.track || [];
+  }
+
+  // ---------- ARTIST ----------
+  else if (type === "artist") {
+    const sim = await lastfmFetch(
+      `method=artist.getsimilar&artist=${encodeURIComponent(seedArtist)}`
+    );
+
+    const similarArtists = sim.similarartists?.artist || [];
+
+    for (const a of similarArtists.slice(0, 5)) {
+      const top = await lastfmFetch(
+        `method=artist.gettoptracks&artist=${encodeURIComponent(a.name)}`
+      );
+
+      const firstTrack = top.toptracks?.track?.[0];
+      if (firstTrack) {
+        lastfmResults.push(firstTrack);
       }
     }
-
-    if (type === "album") {
-      const album = await spotifyFetch(`https://api.spotify.com/v1/albums/${id}`);
-      const artistId = album.artists[0].id;
-
-      const artistAlbums = await spotifyFetch(`https://api.spotify.com/v1/artists/${artistId}/albums?limit=10`);
-      recs.push(...artistAlbums.items);
-    }
-
-    // Dedupe + limit
-    const unique = [...new Map(recs.map(i => [i.id, i])).values()].slice(0, 20);
-    res.json({ items: unique });
-
-  } catch (err) {
-    console.error("Recommendation error:", err);
-    res.status(500).json({ error: "Failed to generate recommendations" });
   }
+
+  // ---------- Last.fm -> Spotify ----------
+  const spotifyRecommendations = [];
+
+  for (const item of lastfmResults.slice(0, 10)) {
+    const spotifySearch = await spotifyFetch(
+      `https://api.spotify.com/v1/search?q=${encodeURIComponent(item.name + " " + item.artist.name)}&type=track&limit=1`
+    );
+
+    const match = spotifySearch.tracks?.items?.[0];
+    if (match) {
+      spotifyRecommendations.push(match);
+    }
+  }
+
+  res.json({
+    type,
+    seed: { artist: seedArtist, track: seedTrack },
+    recommendations: spotifyRecommendations
+  }); 
 });
 
 // start server
