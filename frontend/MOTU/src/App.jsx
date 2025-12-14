@@ -2,6 +2,7 @@ import { useState } from 'react';
 import './App.css';
 
 function App() {
+
 	//State for selected dropdown value
 	const [selectedValue, setSelectedValue] = useState('');
   
@@ -10,6 +11,9 @@ function App() {
   
 	//State to display the result
 	const [result, setResult] = useState('');
+
+	//Hold our IDs
+	const [recommendationIds, setRecommendationIds] = useState([]);
 
 	//Handle dropdown change
 	const handleChange = (event) => {
@@ -22,9 +26,33 @@ function App() {
 	};
 
 	//Handle button click to print the result
-	const handleButtonClick = () => {
-		setResult(`Search Type: ${selectedValue} | User Text: ${userInput}`);
-	};
+	const handleButtonClick = async () => {
+        const type = selectedValue;
+        const query = userInput;
+
+        if (!type || !query) {
+            setResult("Please select a type and enter a search term.");
+            return;
+        }
+
+        try {
+            const response = await fetch(`http://localhost:3000/api/recommendations?type=${type}&${type}=${query.replace(/ /g, '+')}`);
+            
+            if (!response.ok) {
+                throw new Error(`HTTP Error`);
+            }
+
+            const data = await response.json();
+
+			const ids = data.recommendations.map((rec) => rec.id);
+        	setRecommendationIds(ids);
+
+            setResult(`type=${type} | ${type}=${query}`);
+            
+        } catch (error) {
+            setResult("No Results");
+        }
+    };
 
 	return (
 		<div className="App">
@@ -61,14 +89,22 @@ function App() {
 			{result && <p>{result}</p>}
 		</div>
 
-		<iframe
-        	src='https://open.spotify.com/embed/artist/1Qp56T7n950O3EGMsSl81D?utm_source=generator'
-        	width="300"
-        	height="380"
-        	allow="encrypted-media"
-        	title="Spotify Embed"
-      	>
-		</iframe>
+		{recommendationIds.length > 0 && (
+        	<ul>
+          		{recommendationIds.map((id) => (
+            		<li key={id}>
+						<iframe
+        					src={`https://open.spotify.com/embed/track/${id}?utm_source=generator`}
+        					width="300"
+        					height="140"
+        					allow="encrypted-media"
+        					title="Spotify Embed"
+      					>
+						</iframe>
+					</li>
+          		))}
+        	</ul>
+      	)}
 
 	</div>
 	);

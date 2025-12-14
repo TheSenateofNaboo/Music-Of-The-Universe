@@ -5,6 +5,10 @@ require('dotenv').config()
 const express = require('express');
 const app = express();
 
+// Allow CORS
+const cors = require('cors');
+app.use( cors ({ origin: "*" }));
+
 fetch("https://api.spotify.com/...");
 
 // Retrieve Spotify API credentials from .env
