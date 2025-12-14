@@ -111,16 +111,22 @@ app.get('/api/albums/:id', async (req, res) => {
   type=album  -> album -> pick track -> similar tracks
 */
 app.get('/api/recommendations', async (req, res) => {
-  const { type, artist, track, albumId } = req.query;
+  const { type, query } = req.query;
 
-  let seedArtist = artist;
-  let seedTrack = track;
+  let seedArtist;
+  let seedTrack;
   let lastfmResults = [];
 
   // ---------- ALBUM ----------
   if (type === "album") {
+    const albumSearch = await spotifyFetch(
+      `https://api.spotify.com/v1/search?q=${encodeURIComponent(query)}&type=album&limit=1`
+    );
+
+    const albumItem = albumSearch.albums?.items?.[0];
+
     const album = await spotifyFetch(
-      `https://api.spotify.com/v1/albums/${albumId}`
+      `https://api.spotify.com/v1/albums/${albumItem.id}`
     );
 
     const albumTrack = album.tracks.items[0];
@@ -136,6 +142,14 @@ app.get('/api/recommendations', async (req, res) => {
 
   // ---------- TRACK ----------
   else if (type === "track") {
+    const spotifySearch = await spotifyFetch(
+      `https://api.spotify.com/v1/search?q=${encodeURIComponent(query)}&type=track&limit=1`
+    );
+
+    const seedItem = spotifySearch.tracks?.items?.[0];
+    seedTrack = seedItem.name;
+    seedArtist = seedItem.artists[0].name;
+
     const data = await lastfmFetch(
       `method=track.getsimilar&artist=${encodeURIComponent(seedArtist)}&track=${encodeURIComponent(seedTrack)}`
     );
@@ -145,6 +159,13 @@ app.get('/api/recommendations', async (req, res) => {
 
   // ---------- ARTIST ----------
   else if (type === "artist") {
+    const spotifySearch = await spotifyFetch(
+      `https://api.spotify.com/v1/search?q=${encodeURIComponent(query)}&type=artist&limit=1`
+    );
+
+    const seedItem = spotifySearch.artists?.items?.[0];
+    seedArtist = seedItem.name;
+
     const sim = await lastfmFetch(
       `method=artist.getsimilar&artist=${encodeURIComponent(seedArtist)}`
     );
@@ -157,9 +178,7 @@ app.get('/api/recommendations', async (req, res) => {
       );
 
       const firstTrack = top.toptracks?.track?.[0];
-      if (firstTrack) {
-        lastfmResults.push(firstTrack);
-      }
+      if (firstTrack) lastfmResults.push(firstTrack);
     }
   }
 
@@ -179,7 +198,7 @@ app.get('/api/recommendations', async (req, res) => {
 
   res.json({
     type,
-    seed: { artist: seedArtist, track: seedTrack },
+    seed: { artist: seedArtist, track: seedTrack || null },
     recommendations: spotifyRecommendations
   }); 
 });
