@@ -66,7 +66,6 @@ function App() {
 				<option value="">-- Choose an option --</option>
 				<option value="album">Album</option>
 				<option value="artist">Artist</option>
-				<option value="genre">Genre</option>
 				<option value="track">Song</option>
 			</select>
 		</div>
