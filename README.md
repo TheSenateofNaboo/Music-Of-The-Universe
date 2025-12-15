@@ -17,7 +17,7 @@ The website then displays the results to the user as Spotify embedded links gett
 the Spotify public API. This allows the user to easily add their songs to their liked playlist in Spotify
 to listen later or add to a more specified playlist later.
 
-##How to Run:
+## How to Run:
 To run this project, you will need to have the ability to run a react application and node.js project.
 Once you have the required libraries added, make sure to install these other files as well.
 
@@ -32,10 +32,13 @@ You will also need to have made an account with Spotify (can be a free account) 
 Make sure to make an account with both and generate an ID and secret with both. You will need to make a .env file
 in the backend for the APIs to work. Follow the bellow format, filling in the fields, for the .env file:
 
-ID=
+ID= 
+
 SECRET=
+
 LASTFM_ID=
-LASTFM_SECRET
+
+LASTFM_SECRET=
 
 To run the project, we will first start the react webpage. In a terminal, go to the frontend>MOTU and execute:
 
