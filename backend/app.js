@@ -90,24 +90,6 @@ app.get('/api/search', async (req, res) => {
   }
 });
 
-// Get track info
-app.get('/api/track/:id', async (req, res) => {
-  const data = await spotifyFetch(`https://api.spotify.com/v1/tracks/${req.params.id}`);
-  res.json(data);
-});
-
-// artist info
-app.get('/api/artist/:id', async (req, res) => {
-  const data = await spotifyFetch(`https://api.spotify.com/v1/artists/${req.params.id}`);
-  res.json(data);
-});
-
-// albums info
-app.get('/api/albums/:id', async (req, res) => {
-  const data = await spotifyFetch(`https://api.spotify.com/v1/albums/${req.params.id}`);
-  res.json(data);
-});
-
 /*
   ------------Recommendations------------
   type=track  -> similar tracks
@@ -123,11 +105,12 @@ app.get('/api/recommendations', async (req, res) => {
 
   // ---------- ALBUM ----------
   if (type === "album") {
-    const albumSearch = await spotifyFetch(
-      `https://api.spotify.com/v1/search?q=${encodeURIComponent(query)}&type=album&limit=1`
+    const spotifySearch = await spotifyFetch(
+      `https://api.spotify.com/v1/search?q=${encodeURIComponent(query)}&type=album&limit=5`
     );
 
-    const albumItem = albumSearch.albums?.items?.[0];
+    const items = spotifySearch.albums?.items || [];
+    const albumItem = items[Math.floor(Math.random() * items.length)]; 
 
     const album = await spotifyFetch(
       `https://api.spotify.com/v1/albums/${albumItem.id}`
@@ -147,10 +130,12 @@ app.get('/api/recommendations', async (req, res) => {
   // ---------- TRACK ----------
   else if (type === "track") {
     const spotifySearch = await spotifyFetch(
-      `https://api.spotify.com/v1/search?q=${encodeURIComponent(query)}&type=track&limit=1`
+      `https://api.spotify.com/v1/search?q=${encodeURIComponent(query)}&type=track&limit=5`
     );
 
-    const seedItem = spotifySearch.tracks?.items?.[0];
+    const items = spotifySearch.tracks?.items || [];
+    const seedItem = items[Math.floor(Math.random() * items.length)];
+
     seedTrack = seedItem.name;
     seedArtist = seedItem.artists[0].name;
 
@@ -164,10 +149,12 @@ app.get('/api/recommendations', async (req, res) => {
   // ---------- ARTIST ----------
   else if (type === "artist") {
     const spotifySearch = await spotifyFetch(
-      `https://api.spotify.com/v1/search?q=${encodeURIComponent(query)}&type=artist&limit=1`
+      `https://api.spotify.com/v1/search?q=${encodeURIComponent(query)}&type=artist&limit=5`
     );
 
-    const seedItem = spotifySearch.artists?.items?.[0];
+    const items = spotifySearch.artists?.items || [];
+    const seedItem = items[Math.floor(Math.random() * items.length)];
+    
     seedArtist = seedItem.name;
 
     const sim = await lastfmFetch(
@@ -189,15 +176,13 @@ app.get('/api/recommendations', async (req, res) => {
   // ---------- Last.fm -> Spotify ----------
   const spotifyRecommendations = [];
 
-  for (const item of lastfmResults.slice(0, 10)) {
+  for (const item of lastfmResults.slice(0, 20)) {
     const spotifySearch = await spotifyFetch(
-      `https://api.spotify.com/v1/search?q=${encodeURIComponent(item.name + " " + item.artist.name)}&type=track&limit=1`
+      `https://api.spotify.com/v1/search?q=${encodeURIComponent(item.name + " " + item.artist.name)}&type=track&limit=5`
     );
 
-    const match = spotifySearch.tracks?.items?.[0];
-    if (match) {
-      spotifyRecommendations.push(match);
-    }
+    const matches = spotifySearch.tracks?.items || [];
+    spotifyRecommendations.push(...matches.slice(0, 2));
   }
 
   res.json({
